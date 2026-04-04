@@ -1,9 +1,11 @@
-const issues = [
-  { id: "1", title: "Login page not loading", reporter: "John Smith", type: "bug", status: "open", date: "2026-03-25" },
-  { id: "2", title: "Payment processing delay", reporter: "Sarah Johnson", type: "complaint", status: "in_progress", date: "2026-03-20" },
-];
+"use client";
+
+import { useEffect, useState } from "react";
+import api, { type IssueRecord } from "@/lib/api";
 
 export default function AdminIssuesPage() {
+  const [issues, setIssues] = useState<IssueRecord[]>([]);
+
   const getStatusClass = (status: string) => {
     switch (status) {
       case "open": return "d-badge-warning";
@@ -12,6 +14,20 @@ export default function AdminIssuesPage() {
       case "closed": return "d-badge-neutral";
       default: return "d-badge-neutral";
     }
+  };
+
+  const loadIssues = async () => {
+    const items = await api.issues.getAll();
+    setIssues(items);
+  };
+
+  useEffect(() => {
+    loadIssues().catch(() => setIssues([]));
+  }, []);
+
+  const handleStatusChange = async (id: string, status: string) => {
+    await api.issues.update(id, { status });
+    await loadIssues();
   };
 
   return (
@@ -38,18 +54,18 @@ export default function AdminIssuesPage() {
             </thead>
             <tbody>
               {issues.map((issue) => (
-                <tr key={issue.id}>
+                <tr key={issue._id}>
                   <td style={{ fontWeight: 500 }}>{issue.title}</td>
-                  <td style={{ color: 'var(--muted-foreground)' }}>{issue.reporter}</td>
+                  <td style={{ color: 'var(--muted-foreground)' }}>{issue.reporterName}</td>
                   <td><span className="d-badge d-badge-neutral">{issue.type}</span></td>
                   <td>
                     <span className={`d-badge ${getStatusClass(issue.status)}`}>
                       {issue.status.replace("_", " ")}
                     </span>
                   </td>
-                  <td style={{ color: 'var(--muted-foreground)' }}>{issue.date}</td>
+                  <td style={{ color: 'var(--muted-foreground)' }}>{new Date(issue.createdAt).toLocaleDateString()}</td>
                   <td>
-                    <button className="d-btn d-btn-sm">View</button>
+                    <button className="d-btn d-btn-sm" onClick={() => handleStatusChange(issue._id, issue.status === 'open' ? 'in_progress' : 'resolved')}>Advance</button>
                   </td>
                 </tr>
               ))}

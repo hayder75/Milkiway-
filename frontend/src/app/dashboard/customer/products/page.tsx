@@ -1,17 +1,32 @@
-import Link from "next/link";
+"use client";
 
-const purchasedProducts = [
-  {
-    id: "1",
-    name: "E-Commerce Pro",
-    category: "E-Commerce",
-    purchaseDate: "2026-03-15",
-    status: "active",
-    price: 2499
-  },
-];
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { getStoredSeller } from "@/lib/session";
+import { LoadingSpinner } from "@/components/ui/loading";
 
 export default function CustomerProductsPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const user = getStoredSeller();
+    if (!user || user.role !== 'customer') {
+      router.push('/auth/login?redirect=/dashboard/customer/products');
+    } else {
+      setLoading(false);
+    }
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="dashboard-page-header">
@@ -24,35 +39,9 @@ export default function CustomerProductsPage() {
 
       <div className="dashboard-card">
         <div className="dashboard-card-body">
-          <table className="dashboard-table">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Category</th>
-                <th>Purchase Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {purchasedProducts.map((product) => (
-                <tr key={product.id}>
-                  <td style={{ fontWeight: 500 }}>{product.name}</td>
-                  <td><span className="d-badge d-badge-neutral">{product.category}</span></td>
-                  <td style={{ color: 'var(--muted-foreground)' }}>{product.purchaseDate}</td>
-                  <td>
-                    <span className="d-badge d-badge-success">{product.status}</span>
-                  </td>
-                  <td>
-                    <div style={{ display: 'flex', gap: '0.35rem' }}>
-                      <button className="d-btn d-btn-sm">Access</button>
-                      <button className="d-btn d-btn-sm">Download</button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="text-center py-8 text-muted-foreground">
+            No purchased products yet
+          </div>
         </div>
       </div>
     </div>

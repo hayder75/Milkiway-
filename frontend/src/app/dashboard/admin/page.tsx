@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import api from "@/lib/api";
+import { getStoredUser } from "@/lib/session";
 import { 
   DollarSign, 
   Users, 
@@ -24,7 +26,7 @@ interface Seller {
   status: string;
   totalSales: number;
   totalEarnings: number;
-  createdAt: string;
+  createdAt?: string;
 }
 
 interface Sale {
@@ -41,20 +43,29 @@ interface Sale {
 interface Contact {
   _id: string;
   name: string;
-  email: string;
-  phone: string;
-  message: string;
+  email?: string | null;
+  phone?: string;
+  message?: string | null;
   status: string;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export default function AdminDashboardPage() {
+  const router = useRouter();
   const [sellers, setSellers] = useState<Seller[]>([]);
   const [sales, setSales] = useState<Sale[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const storedAdmin = getStoredUser();
+    if (!storedAdmin || storedAdmin.role !== 'admin') {
+      router.push('/auth/login?redirect=/dashboard/admin');
+      return;
+    }
+
+    setLoading(false);
+
     const fetchData = async () => {
       try {
         const [sellersData, salesData, contactsData] = await Promise.all([
@@ -72,7 +83,8 @@ export default function AdminDashboardPage() {
       }
     };
     fetchData();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router]);
 
   const pendingDeals = sales.filter(s => s.status === 'pending');
   const totalRevenue = sales.reduce((sum, s) => sum + s.salePrice, 0);

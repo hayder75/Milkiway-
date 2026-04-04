@@ -1,14 +1,37 @@
 "use client";
 
-import { useState } from "react";
-
-const tickets = [
-  { id: "1", subject: "Need help with API integration", status: "open", date: "2026-03-25" },
-];
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { getStoredSeller } from "@/lib/session";
 
 export default function CustomerSupportPage() {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const user = getStoredSeller();
+    if (!user || user.role !== 'customer') {
+      router.push('/auth/login?redirect=/dashboard/customer/support');
+    }
+  }, [router]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!subject.trim() || !message.trim()) return;
+
+    setSubmitting(true);
+    // Simulate submission - in production, would call API
+    setTimeout(() => {
+      setSubmitting(false);
+      setSuccess(true);
+      setSubject("");
+      setMessage("");
+      setTimeout(() => setSuccess(false), 3000);
+    }, 1000);
+  };
 
   const getStatusClass = (status: string) => {
     switch (status) {
@@ -35,9 +58,9 @@ export default function CustomerSupportPage() {
           <div className="dashboard-card-title">Submit a Ticket</div>
         </div>
         <div className="dashboard-card-body-padded">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '500px' }}>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '500px' }}>
             <div>
-              <label style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '0.8rem', fontWeight: 500, marginBottom: '0.35rem', color: 'var(--foreground)' }}>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 500, marginBottom: '0.35rem' }}>
                 Subject
               </label>
               <input
@@ -47,10 +70,11 @@ export default function CustomerSupportPage() {
                 placeholder="Brief description of your issue..."
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
+                required
               />
             </div>
             <div>
-              <label style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '0.8rem', fontWeight: 500, marginBottom: '0.35rem', color: 'var(--foreground)' }}>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 500, marginBottom: '0.35rem' }}>
                 Message
               </label>
               <textarea
@@ -59,12 +83,24 @@ export default function CustomerSupportPage() {
                 placeholder="Describe your issue in detail..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
+                required
               />
             </div>
             <div>
-              <button className="d-btn d-btn-primary">Submit Ticket</button>
+              <button 
+                type="submit" 
+                className="d-btn d-btn-primary"
+                disabled={submitting}
+              >
+                {submitting ? "Submitting..." : "Submit Ticket"}
+              </button>
+              {success && (
+                <span style={{ marginLeft: '1rem', color: 'green', fontSize: '0.9rem' }}>
+                  Ticket submitted successfully!
+                </span>
+              )}
             </div>
-          </div>
+          </form>
         </div>
       </div>
 
@@ -72,21 +108,9 @@ export default function CustomerSupportPage() {
       <h3 className="dashboard-section-title">Your Tickets</h3>
       <div className="dashboard-card" style={{ marginBottom: '2rem' }}>
         <div className="dashboard-card-body">
-          {tickets.length > 0 ? (
-            tickets.map((ticket) => (
-              <div key={ticket.id} className="dashboard-list-item">
-                <div>
-                  <div className="dashboard-list-primary">{ticket.subject}</div>
-                  <div className="dashboard-list-secondary">Created on {ticket.date}</div>
-                </div>
-                <span className={`d-badge ${getStatusClass(ticket.status)}`}>{ticket.status}</span>
-              </div>
-            ))
-          ) : (
-            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--muted-foreground)', fontFamily: "'Inter', sans-serif", fontSize: '0.85rem' }}>
-              No support tickets yet
-            </div>
-          )}
+          <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--muted-foreground)' }}>
+            No support tickets yet - submit one above
+          </div>
         </div>
       </div>
 

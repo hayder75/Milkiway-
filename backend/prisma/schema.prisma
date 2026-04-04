@@ -1,0 +1,216 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model System {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  longDescription String?
+  image       String?
+  video       String?
+  demoUrl     String?
+  price       Float     @default(0)
+  commissionRate Float  @default(15)
+  features    String[]
+  category    String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  sales       Sale[]
+  contacts    Contact[]
+
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+model Seller {
+  id             String    @id @default(cuid())
+  sellerId       String    @unique
+  name           String
+  username       String?   @unique
+  email          String    @unique
+  phone          String?
+  normalizedPhone String?  @unique
+  passwordHash   String?
+  role           String    @default("seller")
+  commissionRate Float     @default(30)
+  totalSales     Int       @default(0)
+  totalEarnings  Float     @default(0)
+  status         String    @default("pending")
+  createdAt      DateTime  @default(now())
+  
+  // Payment methods
+  paymentMethods Json?
+  
+  sales          Sale[]
+  contacts       Contact[]
+  featureRequests FeatureRequest[]
+  issues         IssueReport[]
+  payoutRequests PayoutRequest[]
+  contracts      Contract[]
+  // Note: CreativeRequest doesn't need relation to Seller as it's from public
+
+  @@index([sellerId])
+  @@index([username])
+  @@index([normalizedPhone])
+  @@index([status])
+  @@index([role])
+}
+
+model PayoutRequest {
+  id             String   @id @default(cuid())
+  sellerId       String
+  amount         Float
+  paymentMethod  String
+  status         String   @default("pending")
+  note           String?
+  paymentImage   String?
+  contractImage  String?
+  processedAt    DateTime?
+  processedBy    String?
+  createdAt      DateTime @default(now())
+  seller         Seller   @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+
+  @@index([sellerId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model FeatureRequest {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  votes       Int      @default(1)
+  status      String   @default("pending")
+  requestedBy String
+  sellerId    String?
+  createdAt   DateTime @default(now())
+  seller      Seller?  @relation(fields: [sellerId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([sellerId])
+  @@index([createdAt])
+}
+
+model IssueReport {
+  id           String   @id @default(cuid())
+  title        String
+  description  String?
+  type         String   @default("bug")
+  status       String   @default("open")
+  reporterName String
+  sellerId     String?
+  createdAt    DateTime @default(now())
+  seller       Seller?  @relation(fields: [sellerId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([sellerId])
+  @@index([createdAt])
+}
+
+model Contract {
+  id          String   @id @default(cuid())
+  sellerId    String
+  systemId    String
+  systemName  String
+  buyerName   String
+  buyerPhone  String
+  buyerEmail  String?
+  salePrice   Float
+  status      String   @default("draft") // draft, used, cancelled
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  seller      Seller   @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+
+  @@index([sellerId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Sale {
+  id                String   @id @default(cuid())
+  saleId            String   @unique
+  sellerId          String
+  systemId          String
+  systemName        String
+  buyerName         String
+  buyerPhone        String
+  buyerEmail        String?
+  salePrice         Float
+  commissionPercent Float
+  commissionAmount  Float
+  companyEarnings   Float
+  status            String   @default("pending")
+  paymentImage      String?  // Payment proof image
+  contractImage     String?  // Signed contract image
+  createdAt         DateTime @default(now())
+  seller            Seller   @relation(fields: [sellerId], references: [id], onDelete: Restrict)
+  system            System   @relation(fields: [systemId], references: [id], onDelete: Restrict)
+
+  @@index([sellerId])
+  @@index([systemId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Contact {
+  id         String   @id @default(cuid())
+  name       String
+  phone      String
+  email      String?
+  systemId   String?
+  systemName String?
+  message    String?
+  status     String   @default("new")
+  sellerId   String?
+  createdAt  DateTime @default(now())
+  seller     Seller?  @relation(fields: [sellerId], references: [id], onDelete: SetNull)
+  system     System?  @relation(fields: [systemId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([sellerId])
+  @@index([systemId])
+}
+
+model Portfolio {
+  id          String    @id @default(cuid())
+  title       String
+  client      String
+  category    String
+  description String
+  image       String
+  images      String[]
+  video       String?
+  size        String    @default("medium")
+  services    String[]
+  tags        String[]
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+
+  @@index([category])
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+model CreativeRequest {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String
+  companyName String?
+  projectType String
+  budget      String?
+  description String
+  status      String   @default("new") // new, contacted, completed, cancelled
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}

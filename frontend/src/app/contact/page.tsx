@@ -61,7 +61,7 @@ export default function ContactPage() {
           <div className="grid lg:grid-cols-2 gap-12">
             
             {/* Form */}
-            <Card className="bg-[#FFCC00] dark:bg-[#E5B800] border-0 shadow-none">
+            <Card className="bg-white border-2 border-[#132A4B] shadow-lg">
               <CardContent className="p-8">
                 <h2 className="text-xl font-semibold text-[#132A4B] mb-6">Send us a message</h2>
                 
@@ -86,7 +86,7 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
-                      className="bg-white border-0" 
+                      className="bg-white border border-gray-300" 
                     />
                   </div>
                   <div className="space-y-2">
@@ -98,7 +98,7 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
-                      className="bg-white border-0" 
+                      className="bg-white border border-gray-300" 
                     />
                   </div>
                   <div className="space-y-2">
@@ -109,7 +109,7 @@ export default function ContactPage() {
                       placeholder="+1 234 567 8900" 
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="bg-white border-0" 
+                      className="bg-white border border-gray-300" 
                     />
                   </div>
                   <div className="space-y-2">

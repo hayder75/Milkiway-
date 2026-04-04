@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import api from "@/lib/api";
+import { getStoredSeller } from "@/lib/session";
 import { 
   DollarSign, 
   ShoppingCart,
@@ -55,13 +56,13 @@ export default function SellerDashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedSeller = localStorage.getItem('seller');
+    const storedSeller = getStoredSeller();
     if (!storedSeller) {
-      router.push('/auth/login');
+      router.push('/auth/login?redirect=/dashboard/seller');
       return;
     }
     
-    const sellerData: Seller = JSON.parse(storedSeller);
+    const sellerData: Seller = storedSeller;
     setSeller(sellerData);
 
     const fetchData = async () => {

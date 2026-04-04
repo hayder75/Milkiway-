@@ -1,73 +1,64 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, Mail, Monitor, Smartphone } from "lucide-react";
 
 export default function HomePage() {
   return (
     <div className="min-h-screen font-sans selection:bg-[#FFD200] selection:text-[#132A4B] dark:selection:text-[#132A4B] bg-background text-foreground transition-colors duration-300">
-      {/* Hero Section - Yellow */}
-      <section className="bg-[#FFCC00] dark:bg-[#E5B800] min-h-[90vh] px-4 md:px-8 relative overflow-hidden transition-colors flex items-center">
-        <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-12 items-center">
+      {/* Hero Section - Yellow Immersive Layout */}
+      <section className="relative overflow-hidden bg-[#FFCC00] dark:bg-[#E5B800] min-h-[85vh] px-4 md:px-8 flex items-center transition-colors py-20">
+        <div className="max-w-[1400px] mx-auto w-full grid md:grid-cols-12 items-center gap-8 md:gap-12 relative z-10">
           
-          {/* Left Text */}
-          <div className="z-10 mt-10">
-            <h1 className="text-[3.5rem] md:text-[5.5rem] font-black text-[#132A4B] leading-[0.95] mb-6 tracking-tight">
-              <span className="block text-[0.3em] font-bold mb-2 tracking-widest uppercase">Welcome to</span>
-              MILKYWAY
+          {/* Left Column - Large Text */}
+          <div className="md:col-span-4 lg:col-span-3 text-left">
+            <span className="block text-[#132A4B]/60 uppercase tracking-[0.2em] text-[11px] font-black mb-4">Milkyway Edition</span>
+            <h1 className="text-5xl md:text-7xl font-black leading-[0.9] tracking-tighter text-[#132A4B] mb-2 uppercase">
+              Milkyway <br/>
+              <span className="text-[#132A4B]/40 italic">Systems</span>
             </h1>
-            <p className="text-xl md:text-2xl text-[#132A4B] mb-10 font-bold max-w-lg leading-snug">
-              Build a scalable software revenue stream.<br/>
-              Partner with us to distribute premium enterprise solutions. Seal deals, manage clients, and collect commissions globally.
-            </p>
-            
-            <div className="flex flex-wrap gap-4 mb-20">
-              <Link href="/become-seller" className="bg-[#132A4B] text-white hover:bg-black transition-colors px-8 py-4 rounded-xl font-black text-lg flex items-center gap-3 shadow-[4px_4px_0px_#000000] active:translate-y-1 active:shadow-none uppercase tracking-wide">
-                <Mail className="w-6 h-6" strokeWidth={3} />
-                Partner Program
-              </Link>
-            </div>
+            <p className="text-[#132A4B]/60 text-xs uppercase tracking-[0.2em] font-bold mt-6">Secure Revenue Channels</p>
+          </div>
 
-            <div className="inline-flex items-center gap-2 text-[#132A4B] font-bold cursor-pointer hover:opacity-70 transition-opacity">
-              <ArrowDown className="w-6 h-6" strokeWidth={3} />
-              <span className="text-lg">Scroll down to learn more</span>
+          {/* Center Column - Static Llama Artwork (Smaller Size) */}
+          <div className="md:col-span-4 lg:col-span-6 flex justify-center items-center">
+            <div className="relative w-full max-w-[380px] md:max-w-[420px] lg:max-w-[480px]">
+              <Image
+                src="/hero-llama.png"
+                alt="Llama Artwork"
+                width={800}
+                height={800}
+                priority
+                className="w-full h-auto object-contain mix-blend-multiply opacity-90 transition-transform duration-700 hover:scale-[1.02]"
+              />
             </div>
           </div>
 
-          {/* Right - Llama with Halo */}
-          <div className="flex justify-center relative z-10 hidden md:flex h-[650px] items-center">
-            <div className="relative">
-              {/* Rotating Halo */}
-              <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-28 h-6">
-                <svg viewBox="0 0 100 25" className="w-full animate-spin" style={{ animationDuration: '4s' }}>
-                  <ellipse cx="50" cy="12" rx="45" ry="10" fill="none" stroke="#132A4B" strokeWidth="2.5"/>
-                </svg>
-              </div>
+          {/* Right Column - Details/CTA */}
+          <div className="md:col-span-4 lg:col-span-3 text-left md:text-right space-y-8">
+            <div className="space-y-4">
+              <h3 className="text-2xl font-black text-[#132A4B] tracking-tight uppercase">Llama Series. 01</h3>
+              <p className="text-[#132A4B]/70 text-sm leading-relaxed max-w-[280px] md:ml-auto font-bold italic">
+                Our Llama framework supports a robust multi-dimensional network of global sales professionals and enterprise software.
+              </p>
+            </div>
+            
+            <div className="flex flex-col gap-4 items-start md:items-end">
+              <Link href="/become-seller">
+                <button className="bg-[#132A4B] text-white hover:bg-black transition-all px-8 py-3.5 rounded-xl font-black text-sm flex items-center gap-3 shadow-[4px_4px_0px_rgba(0,0,0,0.2)] active:translate-y-0.5 active:shadow-none uppercase tracking-[0.15em]">
+                  Partner Now
+                </button>
+              </Link>
               
-              {/* Clean Llama Silhouette */}
-              <svg viewBox="0 0 200 280" className="w-full max-w-[220px]" fill="none" xmlns="http://www.w3.org/2000/svg">
-                {/* Body - oval */}
-                <ellipse cx="100" cy="180" rx="55" ry="40" fill="white" stroke="#132A4B" strokeWidth="3"/>
-                {/* Neck - curved tube */}
-                <path d="M130 155 Q 145 110, 135 70 Q 130 50, 145 40" fill="white" stroke="#132A4B" strokeWidth="3"/>
-                {/* Head - rounded */}
-                <ellipse cx="150" cy="45" rx="22" ry="18" fill="white" stroke="#132A4B" strokeWidth="3"/>
-                {/* Ears */}
-                <path d="M135 30 Q 130 5, 145 20" fill="white" stroke="#132A4B" strokeWidth="2.5"/>
-                <path d="M150 28 Q 155 5, 168 18" fill="white" stroke="#132A4B" strokeWidth="2.5"/>
-                {/* Eye */}
-                <circle cx="158" cy="42" r="3" fill="#132A4B"/>
-                {/* Snout */}
-                <ellipse cx="168" cy="52" rx="8" ry="5" fill="white" stroke="#132A4B" strokeWidth="2"/>
-                {/* Legs */}
-                <rect x="60" y="210" width="14" height="45" rx="6" fill="white" stroke="#132A4B" strokeWidth="2.5"/>
-                <rect x="85" y="210" width="14" height="45" rx="6" fill="white" stroke="#132A4B" strokeWidth="2.5"/>
-                <rect x="115" y="210" width="14" height="45" rx="6" fill="white" stroke="#132A4B" strokeWidth="2.5"/>
-                <rect x="140" y="210" width="14" height="45" rx="6" fill="white" stroke="#132A4B" strokeWidth="2.5"/>
-                {/* Tail */}
-                <path d="M45 170 Q 25 165, 28 185 Q 32 200, 50 195" fill="white" stroke="#132A4B" strokeWidth="2.5"/>
-              </svg>
+              <div className="flex items-center gap-2 text-[#132A4B]/40 font-black cursor-pointer hover:text-[#132A4B] transition-colors uppercase text-[10px] tracking-[0.1em]">
+                <span className="text-lg">↓</span>
+                <span>Scroll to explore</span>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Decorative background circle */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-black opacity-[0.03] rounded-full blur-[80px] pointer-events-none"></div>
       </section>
 
       {/* MILKYWAY Intro - White */}
@@ -170,58 +161,188 @@ export default function HomePage() {
         <p className="font-black tracking-widest text-3xl md:text-5xl px-4 uppercase text-white">MATCH. SELL. COLLECT COMMISSIONS.</p>
       </section>
 
-      {/* How It Works - White */}
-      <section className="bg-white py-24 px-4 md:px-8 transition-colors">
-        <div className="max-w-[1100px] mx-auto">
-          <h2 className="text-[#132A4B] text-3xl md:text-4xl font-black mb-4 text-center tracking-tight">
+      {/* How It Works - Infographic Flowchart */}
+      <section className="bg-white py-28 px-4 md:px-8 transition-colors">
+        <div className="max-w-[1200px] mx-auto">
+          <h2 className="text-[#132A4B] text-4xl md:text-5xl font-black mb-4 text-center tracking-tight">
             How Milkyway Works
           </h2>
-          <p className="text-[#132A4B]/70 text-center mb-16 max-w-[600px] mx-auto">
-            Three simple steps to start earning
+          <p className="text-[#132A4B]/70 text-center mb-16 max-w-[600px] mx-auto text-lg">
+            A continuous cycle of earning - click each step for details!
           </p>
           
-          <div className="grid md:grid-cols-3 gap-8 md:gap-4 items-start">
-            {/* Step 1 */}
-            <div className="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-shadow border-2 border-[#132A4B]">
-              <div className="w-20 h-20 bg-[#FFCC00] rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Monitor className="w-10 h-10 text-[#132A4B]" />
+          {/* Infographic Flowchart - Desktop */}
+          <div className="hidden md:block relative">
+            {/* Main horizontal flow */}
+            <div className="flex items-center justify-center gap-2">
+              {/* Step 1 - Choose Product */}
+              <div className="flex flex-col items-center group cursor-pointer relative">
+                <div className="bg-[#FFCC00] rounded-full w-28 h-28 flex items-center justify-center border-4 border-[#132A4B] shadow-lg group-hover:scale-110 transition-transform">
+                  <Monitor className="w-12 h-12 text-[#132A4B]" />
+                </div>
+                <div className="mt-5 text-center">
+                  <h3 className="text-[#132A4B] font-bold text-xl">1. Choose</h3>
+                  <p className="text-[#132A4B]/70 text-sm mt-1">Select from our software catalog</p>
+                </div>
+                
+                {/* Popup */}
+                <div className="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 bg-[#132A4B] text-white p-4 rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20 shadow-2xl">
+                  <h4 className="font-bold text-[#FFCC00] mb-2">Choose a Product</h4>
+                  <p className="text-sm">Browse our catalog of premium software solutions. Select the systems you want to pitch based on your target market.</p>
+                  <ul className="text-xs mt-2 space-y-1">
+                    <li>• CRM Systems</li>
+                    <li>• ERP Solutions</li>
+                    <li>• Marketing Tools</li>
+                    <li>• Analytics Platforms</li>
+                  </ul>
+                </div>
               </div>
-              <h3 className="text-[#132A4B] text-xl font-bold mb-3">Choose a product</h3>
-              <p className="text-[#132A4B]/70 text-sm">Browse ready-made software solutions from our catalog</p>
+              
+              {/* Arrow 1 */}
+              <div className="flex-shrink-0 -mt-16">
+                <svg className="w-10 h-10 text-[#FFCC00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              
+              {/* Step 2 - Find Client */}
+              <div className="flex flex-col items-center group cursor-pointer relative">
+                <div className="bg-[#FFCC00] rounded-full w-28 h-28 flex items-center justify-center border-4 border-[#132A4B] shadow-lg group-hover:scale-110 transition-transform">
+                  <Smartphone className="w-12 h-12 text-[#132A4B]" />
+                </div>
+                <div className="mt-5 text-center">
+                  <h3 className="text-[#132A4B] font-bold text-xl">2. Pitch</h3>
+                  <p className="text-[#132A4B]/70 text-sm mt-1">Find clients using our demos</p>
+                </div>
+                
+                {/* Popup */}
+                <div className="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 bg-[#132A4B] text-white p-4 rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20 shadow-2xl">
+                  <h4 className="font-bold text-[#FFCC00] mb-2">Find a Client</h4>
+                  <p className="text-sm">Reach out to potential customers using our professional demos and sales tools.</p>
+                  <ul className="text-xs mt-2 space-y-1">
+                    <li>• Use provided demos</li>
+                    <li>• Present pitch decks</li>
+                    <li>• Handle objections</li>
+                    <li>• Schedule follow-ups</li>
+                  </ul>
+                </div>
+              </div>
+              
+              {/* Arrow 2 */}
+              <div className="flex-shrink-0 -mt-16">
+                <svg className="w-10 h-10 text-[#FFCC00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              
+              {/* Step 3 - Close & Earn */}
+              <div className="flex flex-col items-center group cursor-pointer relative">
+                <div className="bg-[#FFCC00] rounded-full w-28 h-28 flex items-center justify-center border-4 border-[#132A4B] shadow-lg group-hover:scale-110 transition-transform">
+                  <Mail className="w-12 h-12 text-[#132A4B]" />
+                </div>
+                <div className="mt-5 text-center">
+                  <h3 className="text-[#132A4B] font-bold text-xl">3. Earn</h3>
+                  <p className="text-[#132A4B]/70 text-sm mt-1">Close deals & get commission</p>
+                </div>
+                
+                {/* Popup */}
+                <div className="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 bg-[#132A4B] text-white p-4 rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20 shadow-2xl">
+                  <h4 className="font-bold text-[#FFCC00] mb-2">Close & Earn</h4>
+                  <p className="text-sm">When a client purchases, you earn commission on every sale!</p>
+                  <ul className="text-xs mt-2 space-y-1">
+                    <li>• Up to 30% commission</li>
+                    <li>• Weekly payouts</li>
+                    <li>• Performance bonuses</li>
+                    <li>• Revenue tracking dashboard</li>
+                  </ul>
+                </div>
+              </div>
+              
+              {/* Arrow 3 - back to start (cycle) */}
+              <div className="flex-shrink-0 -mt-16 flex items-center">
+                <svg className="w-10 h-10 text-[#FFCC00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <path d="M21 12a9 9 0 11-6.219-8.56M21 3v6h-6" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
             </div>
             
-            {/* Yellow Curved Arrow 1 */}
-            <div className="hidden md:flex items-center justify-center h-[140px]">
-              <svg className="w-16 h-16 text-[#FFCC00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                <path d="M4 12h12m0 0l-4-4m4 4l4-4" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M20 12v6a2 2 0 01-2 2H8" strokeLinecap="round"/>
+            {/* Cycle Label */}
+            <div className="flex justify-center mt-12">
+              <div className="bg-[#FFCC00] text-[#132A4B] px-8 py-3 rounded-full flex items-center gap-3 font-bold shadow-lg">
+                <span>Repeat the cycle</span>
+                <span>→</span>
+                <span>Choose</span>
+                <span>→</span>
+                <span>Pitch</span>
+                <span>→</span>
+                <span>Earn</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Mobile: Vertical Infographic */}
+          <div className="md:hidden">
+            <div className="flex flex-col items-center gap-8">
+              {/* Step 1 */}
+              <div className="flex items-center gap-5 w-full max-w-sm group cursor-pointer relative">
+                <div className="bg-[#FFCC00] rounded-full w-20 h-20 flex items-center justify-center border-3 border-[#132A4B] flex-shrink-0">
+                  <Monitor className="w-9 h-9 text-[#132A4B]" />
+                </div>
+                <div className="text-left">
+                  <h3 className="text-[#132A4B] font-bold text-lg">1. Choose</h3>
+                  <p className="text-[#132A4B]/70 text-sm">Select software to pitch</p>
+                </div>
+                
+                {/* Mobile popup */}
+                <div className="absolute top-full mt-2 left-0 w-full bg-[#132A4B] text-white p-3 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20">
+                  <p className="text-xs">Browse CRM, ERP, Marketing & Analytics tools. Pick what fits your audience.</p>
+                </div>
+              </div>
+              
+              {/* Arrow */}
+              <svg className="w-8 h-8 text-[#FFCC00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                <path d="M12 5v14M5 12l7 7 7-7" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-            </div>
-            
-            {/* Step 2 */}
-            <div className="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-shadow border-2 border-[#132A4B]">
-              <div className="w-20 h-20 bg-[#FFCC00] rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Smartphone className="w-10 h-10 text-[#132A4B]" />
+              
+              {/* Step 2 */}
+              <div className="flex items-center gap-5 w-full max-w-sm group cursor-pointer relative">
+                <div className="bg-[#FFCC00] rounded-full w-20 h-20 flex items-center justify-center border-3 border-[#132A4B] flex-shrink-0">
+                  <Smartphone className="w-9 h-9 text-[#132A4B]" />
+                </div>
+                <div className="text-left">
+                  <h3 className="text-[#132A4B] font-bold text-lg">2. Pitch</h3>
+                  <p className="text-[#132A4B]/70 text-sm">Find and pitch to clients</p>
+                </div>
+                
+                <div className="absolute top-full mt-2 left-0 w-full bg-[#132A4B] text-white p-3 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20">
+                  <p className="text-xs">Use demos and pitch decks. Talk to businesses, present solutions, handle questions.</p>
+                </div>
               </div>
-              <h3 className="text-[#132A4B] text-xl font-bold mb-3">Find a client</h3>
-              <p className="text-[#132A4B]/70 text-sm">Pitch using our demos and tools</p>
-            </div>
-            
-            {/* Yellow Curved Arrow 2 */}
-            <div className="hidden md:flex items-center justify-center h-[140px]">
-              <svg className="w-16 h-16 text-[#FFCC00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                <path d="M4 12h12m0 0l-4-4m4 4l4-4" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M20 12v6a2 2 0 01-2 2H8" strokeLinecap="round"/>
+              
+              {/* Arrow */}
+              <svg className="w-8 h-8 text-[#FFCC00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                <path d="M12 5v14M5 12l7 7 7-7" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-            </div>
-            
-            {/* Step 3 */}
-            <div className="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-shadow border-2 border-[#132A4B]">
-              <div className="w-20 h-20 bg-[#FFCC00] rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Mail className="w-10 h-10 text-[#132A4B]" />
+              
+              {/* Step 3 */}
+              <div className="flex items-center gap-5 w-full max-w-sm group cursor-pointer relative">
+                <div className="bg-[#FFCC00] rounded-full w-20 h-20 flex items-center justify-center border-3 border-[#132A4B] flex-shrink-0">
+                  <Mail className="w-9 h-9 text-[#132A4B]" />
+                </div>
+                <div className="text-left">
+                  <h3 className="text-[#132A4B] font-bold text-lg">3. Earn</h3>
+                  <p className="text-[#132A4B]/70 text-sm">Close & get paid commission</p>
+                </div>
+                
+                <div className="absolute top-full mt-2 left-0 w-full bg-[#132A4B] text-white p-3 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20">
+                  <p className="text-xs">Earn up to 30% commission. Track sales, receive weekly payouts & bonuses!</p>
+                </div>
               </div>
-              <h3 className="text-[#132A4B] text-xl font-bold mb-3">Close & earn</h3>
-              <p className="text-[#132A4B]/70 text-sm">Submit the deal and get paid commission</p>
+              
+              {/* Cycle Indicator */}
+              <div className="bg-[#FFCC00] text-[#132A4B] px-6 py-2 rounded-full flex items-center gap-2 font-bold text-sm mt-4">
+                <span>Repeat → Choose → Pitch → Earn</span>
+              </div>
             </div>
           </div>
         </div>

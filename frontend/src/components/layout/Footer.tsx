@@ -2,10 +2,10 @@ import Link from "next/link";
 
 const footerLinks = {
   products: [
-    { name: "E-Commerce", href: "/products/1" },
-    { name: "CRM", href: "/products/2" },
-    { name: "Inventory", href: "/products/3" },
-    { name: "Hotel Management", href: "/products/4" },
+    { name: "E-Commerce", href: "/products" },
+    { name: "CRM", href: "/products" },
+    { name: "Inventory", href: "/products" },
+    { name: "Hotel Management", href: "/products" },
   ],
   company: [
     { name: "About Us", href: "/about" },

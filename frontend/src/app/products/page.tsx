@@ -14,9 +14,9 @@ interface Product {
   title: string;
   description: string;
   price: number;
-  category: string;
-  features: string[];
-  image?: string;
+  category?: string | null;
+  features?: string[];
+  image?: string | null;
 }
 
 const categories = ["All", "E-Commerce", "Business", "Retail", "Hospitality", "Education"];

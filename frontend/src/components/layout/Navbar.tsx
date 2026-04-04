@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -8,10 +9,14 @@ import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useSessionSeller } from "@/lib/session";
+import { useTheme } from "next-themes";
 
 const navigation = [
   { name: "Products", href: "/products" },
   { name: "Sellers", href: "/become-seller" },
+  { name: "Creative Studio", href: "/creative-studio" },
   { name: "Contact", href: "/contact" },
 ];
 
@@ -23,20 +28,33 @@ const dashboardNavigation = [
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { theme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { seller, isLoggedIn, logout } = useSessionSeller();
+
+  const dashboardHref = seller?.role === "admin" ? "/dashboard/admin" : "/dashboard/seller";
+
+  const handleLogout = () => {
+    logout();
+    setMobileMenuOpen(false);
+    router.push("/auth/login");
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-sm border-b border-border">
       <div className="max-w-[1200px] mx-auto px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 bg-foreground flex items-center justify-center">
-              <span className="text-background font-bold text-sm" style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}>M</span>
-            </div>
-            <span className="text-lg font-semibold tracking-tight" style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}>
-              Milkyway
-            </span>
+          <Link href="/" className="flex items-center">
+            <Image 
+              src="/logo.png" 
+              alt="Milkyway Logo" 
+              width={200} 
+              height={60} 
+              className="h-10 w-auto transition-all hover:scale-105"
+              style={{ filter: theme === 'dark' ? 'brightness(0) invert(1)' : 'brightness(0)' }}
+            />
           </Link>
 
           {/* Desktop Navigation */}
@@ -59,20 +77,35 @@ export function Navbar() {
           {/* Desktop Auth & Theme */}
           <div className="hidden md:flex items-center space-x-3">
             <ThemeToggle />
-            <Link href="/auth/login">
-              <Button
-                variant="ghost"
-                className="text-sm font-normal"
-                style={{ fontFamily: "'Inter', sans-serif" }}
-              >
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/auth/register">
-              <button className="btn-primary" style={{ padding: '0.55rem 1.25rem', fontSize: '0.7rem' }}>
-                GET STARTED
-              </button>
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <Link href={dashboardHref}>
+                  <Button variant="ghost" className="text-sm font-normal" style={{ fontFamily: "'Inter', sans-serif" }}>
+                    Dashboard
+                  </Button>
+                </Link>
+                <Button variant="outline" onClick={handleLogout} className="text-sm font-normal" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link href="/auth/login">
+                  <Button
+                    variant="ghost"
+                    className="text-sm font-normal"
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                  >
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/auth/register">
+                  <button className="btn-primary" style={{ padding: '0.55rem 1.25rem', fontSize: '0.7rem' }}>
+                    GET STARTED
+                  </button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -117,14 +150,25 @@ export function Navbar() {
                     ))}
                   </div>
                   <div className="border-t pt-4 mt-4 space-y-2">
-                    <Link href="/auth/login" className="block">
-                      <Button variant="ghost" className="w-full">Sign In</Button>
-                    </Link>
-                    <Link href="/auth/register" className="block">
-                      <button className="btn-primary w-full" style={{ fontSize: '0.7rem' }}>
-                        GET STARTED
-                      </button>
-                    </Link>
+                    {isLoggedIn ? (
+                      <>
+                        <Link href={dashboardHref} className="block" onClick={() => setMobileMenuOpen(false)}>
+                          <Button variant="ghost" className="w-full">Dashboard</Button>
+                        </Link>
+                        <Button variant="outline" className="w-full" onClick={handleLogout}>Logout</Button>
+                      </>
+                    ) : (
+                      <>
+                        <Link href="/auth/login" className="block">
+                          <Button variant="ghost" className="w-full">Sign In</Button>
+                        </Link>
+                        <Link href="/auth/register" className="block">
+                          <button className="btn-primary w-full" style={{ fontSize: '0.7rem' }}>
+                            GET STARTED
+                          </button>
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </div>
               </SheetContent>

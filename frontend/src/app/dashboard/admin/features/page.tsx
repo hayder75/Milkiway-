@@ -1,6 +1,11 @@
-import { featureRequests } from "@/data/mockData";
+"use client";
+
+import { useEffect, useState } from "react";
+import api, { type FeatureRequestRecord } from "@/lib/api";
 
 export default function AdminFeaturesPage() {
+  const [featureRequests, setFeatureRequests] = useState<FeatureRequestRecord[]>([]);
+
   const getStatusClass = (status: string) => {
     switch (status) {
       case "pending": return "d-badge-neutral";
@@ -9,6 +14,20 @@ export default function AdminFeaturesPage() {
       case "completed": return "d-badge-success";
       default: return "d-badge-neutral";
     }
+  };
+
+  const loadFeatures = async () => {
+    const features = await api.features.getAll();
+    setFeatureRequests(features);
+  };
+
+  useEffect(() => {
+    loadFeatures().catch(() => setFeatureRequests([]));
+  }, []);
+
+  const handleStatusChange = async (id: string, status: string) => {
+    await api.features.update(id, { status });
+    await loadFeatures();
   };
 
   return (
@@ -35,7 +54,7 @@ export default function AdminFeaturesPage() {
             </thead>
             <tbody>
               {featureRequests.map((feature) => (
-                <tr key={feature.id}>
+                <tr key={feature._id}>
                   <td>
                     <div className="dashboard-list-primary">{feature.title}</div>
                     <div className="dashboard-list-secondary">{feature.description}</div>
@@ -47,12 +66,12 @@ export default function AdminFeaturesPage() {
                   </td>
                   <td style={{ fontWeight: 500 }}>{feature.votes}</td>
                   <td style={{ color: 'var(--muted-foreground)' }}>{feature.requestedBy}</td>
-                  <td style={{ color: 'var(--muted-foreground)' }}>{feature.createdAt}</td>
+                  <td style={{ color: 'var(--muted-foreground)' }}>{new Date(feature.createdAt).toLocaleDateString()}</td>
                   <td>
                     {feature.status === "pending" && (
                       <div style={{ display: 'flex', gap: '0.35rem' }}>
-                        <button className="d-btn d-btn-sm">Reject</button>
-                        <button className="d-btn d-btn-primary d-btn-sm">Approve</button>
+                        <button className="d-btn d-btn-sm" onClick={() => handleStatusChange(feature._id, "completed")}>Complete</button>
+                        <button className="d-btn d-btn-primary d-btn-sm" onClick={() => handleStatusChange(feature._id, "approved")}>Approve</button>
                       </div>
                     )}
                   </td>

@@ -1,13 +1,14 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { useTheme } from "next-themes";
 import { 
-  Rocket,
   LayoutDashboard,
   Package,
   Users,
@@ -15,13 +16,16 @@ import {
   TrendingUp,
   Gift,
   Bug,
-  User,
   LogOut,
   Home,
   BarChart3,
   ShoppingCart,
-  Headphones
+  Headphones,
+  Palette,
+  User,
+  FileText
 } from "lucide-react";
+import { clearStoredSeller } from "@/lib/session";
 
 interface SidebarProps {
   role: "seller" | "admin" | "customer";
@@ -50,6 +54,7 @@ const sellerSections: NavSection[] = [
       { name: "Products", href: "/dashboard/seller/products", icon: Package },
       { name: "Leads", href: "/dashboard/seller/leads", icon: Users },
       { name: "Deals", href: "/dashboard/seller/deals", icon: ShoppingCart },
+      { name: "Contracts", href: "/dashboard/seller/contracts", icon: FileText },
     ],
   },
   {
@@ -57,6 +62,12 @@ const sellerSections: NavSection[] = [
     items: [
       { name: "Earnings", href: "/dashboard/seller/earnings", icon: DollarSign },
       { name: "Payouts", href: "/dashboard/seller/payouts", icon: TrendingUp },
+    ],
+  },
+  {
+    label: "Account",
+    items: [
+      { name: "Profile", href: "/dashboard/seller/profile", icon: User },
     ],
   },
   {
@@ -80,6 +91,8 @@ const adminSections: NavSection[] = [
       { name: "Users", href: "/dashboard/admin/users", icon: Users },
       { name: "Products", href: "/dashboard/admin/products", icon: Package },
       { name: "Deals", href: "/dashboard/admin/deals", icon: ShoppingCart },
+      { name: "Creative Requests", href: "/dashboard/admin/creative-requests", icon: Palette },
+      { name: "Creative Studio", href: "/dashboard/admin/portfolio", icon: Palette },
     ],
   },
   {
@@ -132,22 +145,31 @@ const roleLabels = {
 
 export function DashboardSidebar({ role }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { theme } = useTheme();
   const sections = sectionMap[role];
 
+  const handleLogout = () => {
+    clearStoredSeller();
+    router.push('/auth/login');
+  };
+
   return (
-    <aside className="w-64 bg-background border-r h-screen flex flex-col">
+    <aside className="w-64 bg-background border-r h-full flex flex-col">
       {/* Logo */}
       <div className="p-4 border-b">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-            <Rocket className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <span className="text-lg font-semibold">Milkyway</span>
-            <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-              {roleLabels[role]}
-            </span>
-          </div>
+        <Link href="/" className="flex flex-col items-start gap-2">
+          <Image 
+            src="/logo.png" 
+            alt="Milkyway Logo" 
+            width={160} 
+            height={48} 
+            className="h-10 w-auto transition-all"
+            style={{ filter: theme === 'dark' ? 'brightness(0) invert(1)' : 'brightness(0)' }}
+          />
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary whitespace-nowrap font-bold uppercase tracking-widest">
+            {roleLabels[role]}
+          </span>
         </Link>
       </div>
 
@@ -199,7 +221,7 @@ export function DashboardSidebar({ role }: SidebarProps) {
           <Home className="w-5 h-5" />
           Back to Home
         </Link>
-        <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-foreground">
+        <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-foreground" onClick={handleLogout}>
           <LogOut className="w-5 h-5 mr-3" />
           Sign Out
         </Button>
