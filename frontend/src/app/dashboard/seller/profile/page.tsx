@@ -308,7 +308,7 @@ export default function SellerProfilePage() {
                     checked={paymentMethods.telebirr?.enabled || false}
                     onChange={(e) => setPaymentMethods(prev => ({
                       ...prev,
-                      telebirr: { ...prev.telebirr, enabled: e.target.checked }
+                      telebirr: { ...(prev.telebirr || { enabled: false }), enabled: e.target.checked }
                     }))}
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
@@ -322,7 +322,7 @@ export default function SellerProfilePage() {
                   value={paymentMethods.telebirr?.phoneNumber || ""}
                   onChange={(e) => setPaymentMethods(prev => ({
                     ...prev,
-                    telebirr: { ...prev.telebirr, phoneNumber: e.target.value }
+                    telebirr: { ...(prev.telebirr || { enabled: true }), phoneNumber: e.target.value }
                   }))}
                 />
               )}
@@ -344,7 +344,7 @@ export default function SellerProfilePage() {
                     checked={paymentMethods.cbe?.enabled || false}
                     onChange={(e) => setPaymentMethods(prev => ({
                       ...prev,
-                      cbe: { ...prev.cbe, enabled: e.target.checked }
+                      cbe: { ...(prev.cbe || { enabled: false }), enabled: e.target.checked }
                     }))}
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
@@ -359,7 +359,7 @@ export default function SellerProfilePage() {
                     value={paymentMethods.cbe?.accountName || ""}
                     onChange={(e) => setPaymentMethods(prev => ({
                       ...prev,
-                      cbe: { ...prev.cbe, accountName: e.target.value }
+                      cbe: { ...(prev.cbe || { enabled: false }), accountName: e.target.value }
                     }))}
                   />
                   <input
@@ -369,7 +369,7 @@ export default function SellerProfilePage() {
                     value={paymentMethods.cbe?.accountNumber || ""}
                     onChange={(e) => setPaymentMethods(prev => ({
                       ...prev,
-                      cbe: { ...prev.cbe, accountNumber: e.target.value }
+                      cbe: { ...(prev.cbe || { enabled: false }), accountNumber: e.target.value }
                     }))}
                   />
                 </div>
@@ -392,7 +392,7 @@ export default function SellerProfilePage() {
                     checked={paymentMethods.awash?.enabled || false}
                     onChange={(e) => setPaymentMethods(prev => ({
                       ...prev,
-                      awash: { ...prev.awash, enabled: e.target.checked }
+                      awash: { ...(prev.awash || { enabled: false }), enabled: e.target.checked }
                     }))}
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
@@ -407,7 +407,7 @@ export default function SellerProfilePage() {
                     value={paymentMethods.awash?.accountName || ""}
                     onChange={(e) => setPaymentMethods(prev => ({
                       ...prev,
-                      awash: { ...prev.awash, accountName: e.target.value }
+                      awash: { ...(prev.awash || { enabled: false }), accountName: e.target.value }
                     }))}
                   />
                   <input
@@ -417,7 +417,7 @@ export default function SellerProfilePage() {
                     value={paymentMethods.awash?.accountNumber || ""}
                     onChange={(e) => setPaymentMethods(prev => ({
                       ...prev,
-                      awash: { ...prev.awash, accountNumber: e.target.value }
+                      awash: { ...(prev.awash || { enabled: false }), accountNumber: e.target.value }
                     }))}
                   />
                 </div>
@@ -440,7 +440,7 @@ export default function SellerProfilePage() {
                     checked={paymentMethods.bank?.enabled || false}
                     onChange={(e) => setPaymentMethods(prev => ({
                       ...prev,
-                      bank: { ...prev.bank, enabled: e.target.checked }
+                      bank: { ...(prev.bank || { enabled: false }), enabled: e.target.checked }
                     }))}
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
@@ -455,7 +455,7 @@ export default function SellerProfilePage() {
                     value={paymentMethods.bank?.bankName || ""}
                     onChange={(e) => setPaymentMethods(prev => ({
                       ...prev,
-                      bank: { ...prev.bank, bankName: e.target.value }
+                      bank: { ...(prev.bank || { enabled: false }), bankName: e.target.value }
                     }))}
                   />
                   <input
@@ -465,7 +465,7 @@ export default function SellerProfilePage() {
                     value={paymentMethods.bank?.accountName || ""}
                     onChange={(e) => setPaymentMethods(prev => ({
                       ...prev,
-                      bank: { ...prev.bank, accountName: e.target.value }
+                      bank: { ...(prev.bank || { enabled: false }), accountName: e.target.value }
                     }))}
                   />
                   <input
@@ -475,7 +475,7 @@ export default function SellerProfilePage() {
                     value={paymentMethods.bank?.accountNumber || ""}
                     onChange={(e) => setPaymentMethods(prev => ({
                       ...prev,
-                      bank: { ...prev.bank, accountNumber: e.target.value }
+                      bank: { ...(prev.bank || { enabled: false }), accountNumber: e.target.value }
                     }))}
                   />
                 </div>
