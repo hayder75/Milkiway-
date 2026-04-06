@@ -39,6 +39,7 @@ export interface SellerRecord {
   username?: string | null;
   email: string;
   phone?: string | null;
+  image?: string | null;
   role?: string;
   commissionRate: number;
   totalSales: number;

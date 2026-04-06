@@ -42,6 +42,7 @@ model Seller {
   totalSales     Int       @default(0)
   totalEarnings  Float     @default(0)
   status         String    @default("pending")
+  image          String?   // Profile image URL
   createdAt      DateTime  @default(now())
   
   // Payment methods

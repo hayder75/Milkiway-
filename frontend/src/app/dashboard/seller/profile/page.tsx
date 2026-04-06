@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getStoredSeller, type SessionSeller } from "@/lib/session";
 import api from "@/lib/api";
 import { LoadingSpinner } from "@/components/ui/loading";
+import { Camera, Upload } from "lucide-react";
 
 interface PaymentMethods {
   bank?: { enabled: boolean; bankName?: string; accountName?: string; accountNumber?: string };
@@ -19,7 +20,10 @@ export default function SellerProfilePage() {
   const [user, setUser] = useState<SessionSeller | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -34,6 +38,8 @@ export default function SellerProfilePage() {
     awash: { enabled: false },
   });
 
+  const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
   useEffect(() => {
     const storedUser = getStoredSeller();
     if (!storedUser || storedUser.role !== 'seller') {
@@ -44,6 +50,7 @@ export default function SellerProfilePage() {
     setName(storedUser.name || "");
     setEmail(storedUser.email || "");
     setPhone(storedUser.phone || "");
+    setProfileImage(storedUser.image || null);
     
     loadPaymentMethods(storedUser.sellerId);
   }, [router]);
@@ -61,6 +68,32 @@ export default function SellerProfilePage() {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    setUploadingImage(true);
+    try {
+      const result = await api.upload.single(file);
+      const imageUrl = result.url;
+      
+      await api.sellerProfile.update(user.sellerId, {
+        image: imageUrl,
+      } as any);
+
+      setProfileImage(imageUrl);
+      const updatedUser = { ...user, image: imageUrl };
+      setUser(updatedUser);
+      localStorage.setItem('milkyway_user', JSON.stringify(updatedUser));
+      
+      setMessage({ type: 'success', text: 'Profile image updated!' });
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || 'Failed to upload image' });
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -69,7 +102,7 @@ export default function SellerProfilePage() {
     setMessage(null);
     
     try {
-      await api.sellerProfile.update(user.sellerId, {
+      const result = await api.sellerProfile.update(user.sellerId, {
         name,
         email,
         phone,
@@ -100,7 +133,7 @@ export default function SellerProfilePage() {
     try {
       await api.sellerProfile.update(user.sellerId, {
         paymentMethods: paymentMethods as any,
-      });
+      } as any);
       
       setMessage({ type: 'success', text: 'Payment methods saved successfully!' });
     } catch (error: any) {
@@ -133,31 +166,65 @@ export default function SellerProfilePage() {
         </div>
       )}
 
+      {/* Profile Header with Image */}
+      <div className="dashboard-card mb-6">
+        <div className="dashboard-card-body-padded">
+          <div className="flex flex-col items-center text-center">
+            <div className="relative mb-4">
+              <div className="w-28 h-28 rounded-full bg-[#FFCC00] flex items-center justify-center overflow-hidden border-4 border-white shadow-lg">
+                {profileImage ? (
+                  <Image 
+                    src={profileImage.startsWith('http') ? profileImage : `${backendUrl}${profileImage}`}
+                    alt="Profile" 
+                    width={112} 
+                    height={112} 
+                    className="object-cover"
+                  />
+                ) : (
+                  <span className="text-4xl font-bold text-[#132A4B]">{user?.name?.charAt(0) || 'S'}</span>
+                )}
+              </div>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingImage}
+                className="absolute bottom-0 right-0 w-8 h-8 bg-[#132A4B] rounded-full flex items-center justify-center text-white shadow-lg hover:bg-[#1a3a5c] transition-colors"
+              >
+                {uploadingImage ? (
+                  <LoadingSpinner size="sm" />
+                ) : (
+                  <Camera className="w-4 h-4" />
+                )}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageUpload}
+              />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold">{user?.name}</h2>
+              <p className="text-muted-foreground">{user?.email}</p>
+              <span className="d-badge d-badge-success mt-2">{user?.status}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Profile Info */}
       <div className="dashboard-card mb-6">
         <div className="dashboard-card-header">
           <div className="dashboard-card-title">Account Information</div>
         </div>
         <div className="dashboard-card-body-padded">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-20 h-20 rounded-full bg-[#FFCC00] flex items-center justify-center overflow-hidden">
-              <Image src="/logo.png" alt="Profile" width={80} height={80} className="object-contain" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg">{user?.name}</h3>
-              <p className="text-muted-foreground">{user?.email}</p>
-              <span className="d-badge d-badge-success mt-2">{user?.status}</span>
-            </div>
-          </div>
-
-          <form onSubmit={handleProfileUpdate} style={{ maxWidth: '500px' }}>
-            <div className="space-y-4">
+          <form onSubmit={handleProfileUpdate}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
               <div>
                 <label className="block text-sm font-medium mb-1">Full Name</label>
                 <input
                   type="text"
-                  className="dashboard-search-input"
-                  style={{ maxWidth: '100%' }}
+                  className="dashboard-search-input w-full"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
@@ -166,8 +233,7 @@ export default function SellerProfilePage() {
                 <label className="block text-sm font-medium mb-1">Email</label>
                 <input
                   type="email"
-                  className="dashboard-search-input"
-                  style={{ maxWidth: '100%' }}
+                  className="dashboard-search-input w-full"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -176,45 +242,43 @@ export default function SellerProfilePage() {
                 <label className="block text-sm font-medium mb-1">Phone</label>
                 <input
                   type="tel"
-                  className="dashboard-search-input"
-                  style={{ maxWidth: '100%' }}
+                  className="dashboard-search-input w-full"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+251..."
                 />
               </div>
+              <div></div>
               
-              <div className="pt-4 border-t">
+              <div className="md:col-span-2 pt-4 border-t">
                 <h4 className="font-medium mb-3">Change Password</h4>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Current Password</label>
-                    <input
-                      type="password"
-                      className="dashboard-search-input"
-                      style={{ maxWidth: '100%' }}
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      placeholder="Enter current password"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">New Password</label>
-                    <input
-                      type="password"
-                      className="dashboard-search-input"
-                      style={{ maxWidth: '100%' }}
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="Enter new password (min 8 chars)"
-                    />
-                  </div>
-                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Current Password</label>
+                <input
+                  type="password"
+                  className="dashboard-search-input w-full"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Enter current password"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">New Password</label>
+                <input
+                  type="password"
+                  className="dashboard-search-input w-full"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Enter new password"
+                />
               </div>
 
-              <button type="submit" className="d-btn d-btn-primary" disabled={saving}>
-                {saving ? "Saving..." : "Save Changes"}
-              </button>
+              <div className="md:col-span-2">
+                <button type="submit" className="d-btn d-btn-primary" disabled={saving}>
+                  {saving ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
             </div>
           </form>
         </div>
@@ -227,7 +291,7 @@ export default function SellerProfilePage() {
           <div className="dashboard-card-subtitle">Add your bank or wallet details for payouts</div>
         </div>
         <div className="dashboard-card-body-padded">
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
             {/* Telebirr */}
             <div className="p-4 border rounded-lg">
               <div className="flex items-center justify-between mb-3">
@@ -253,8 +317,7 @@ export default function SellerProfilePage() {
               {paymentMethods.telebirr?.enabled && (
                 <input
                   type="tel"
-                  className="dashboard-search-input"
-                  style={{ maxWidth: '100%' }}
+                  className="dashboard-search-input w-full"
                   placeholder="+2519..."
                   value={paymentMethods.telebirr?.phoneNumber || ""}
                   onChange={(e) => setPaymentMethods(prev => ({
@@ -291,8 +354,7 @@ export default function SellerProfilePage() {
                 <div className="space-y-2">
                   <input
                     type="text"
-                    className="dashboard-search-input"
-                    style={{ maxWidth: '100%' }}
+                    className="dashboard-search-input w-full"
                     placeholder="Account Name"
                     value={paymentMethods.cbe?.accountName || ""}
                     onChange={(e) => setPaymentMethods(prev => ({
@@ -302,8 +364,7 @@ export default function SellerProfilePage() {
                   />
                   <input
                     type="text"
-                    className="dashboard-search-input"
-                    style={{ maxWidth: '100%' }}
+                    className="dashboard-search-input w-full"
                     placeholder="Account Number"
                     value={paymentMethods.cbe?.accountNumber || ""}
                     onChange={(e) => setPaymentMethods(prev => ({
@@ -341,8 +402,7 @@ export default function SellerProfilePage() {
                 <div className="space-y-2">
                   <input
                     type="text"
-                    className="dashboard-search-input"
-                    style={{ maxWidth: '100%' }}
+                    className="dashboard-search-input w-full"
                     placeholder="Account Name"
                     value={paymentMethods.awash?.accountName || ""}
                     onChange={(e) => setPaymentMethods(prev => ({
@@ -352,8 +412,7 @@ export default function SellerProfilePage() {
                   />
                   <input
                     type="text"
-                    className="dashboard-search-input"
-                    style={{ maxWidth: '100%' }}
+                    className="dashboard-search-input w-full"
                     placeholder="Account Number"
                     value={paymentMethods.awash?.accountNumber || ""}
                     onChange={(e) => setPaymentMethods(prev => ({
@@ -391,8 +450,7 @@ export default function SellerProfilePage() {
                 <div className="space-y-2">
                   <input
                     type="text"
-                    className="dashboard-search-input"
-                    style={{ maxWidth: '100%' }}
+                    className="dashboard-search-input w-full"
                     placeholder="Bank Name"
                     value={paymentMethods.bank?.bankName || ""}
                     onChange={(e) => setPaymentMethods(prev => ({
@@ -402,8 +460,7 @@ export default function SellerProfilePage() {
                   />
                   <input
                     type="text"
-                    className="dashboard-search-input"
-                    style={{ maxWidth: '100%' }}
+                    className="dashboard-search-input w-full"
                     placeholder="Account Name"
                     value={paymentMethods.bank?.accountName || ""}
                     onChange={(e) => setPaymentMethods(prev => ({
@@ -413,8 +470,7 @@ export default function SellerProfilePage() {
                   />
                   <input
                     type="text"
-                    className="dashboard-search-input"
-                    style={{ maxWidth: '100%' }}
+                    className="dashboard-search-input w-full"
                     placeholder="Account Number"
                     value={paymentMethods.bank?.accountNumber || ""}
                     onChange={(e) => setPaymentMethods(prev => ({
@@ -427,14 +483,16 @@ export default function SellerProfilePage() {
             </div>
           </div>
 
-          <button 
-            type="button" 
-            className="d-btn d-btn-primary mt-6"
-            onClick={handlePaymentMethodUpdate}
-            disabled={saving}
-          >
-            {saving ? "Saving..." : "Save Payment Methods"}
-          </button>
+          <div className="flex justify-center mt-6">
+            <button 
+              type="button" 
+              className="d-btn d-btn-primary"
+              onClick={handlePaymentMethodUpdate}
+              disabled={saving}
+            >
+              {saving ? "Saving..." : "Save Payment Methods"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
