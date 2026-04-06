@@ -345,6 +345,8 @@ export const api = {
     getAll: () => fetchApi<PayoutRecord[]>('/payouts/all'),
     update: (id: string, data: { status: string; processedBy?: string }) =>
       fetchApi<{ message: string; payout: PayoutRecord }>(`/payouts/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    updateStatus: (id: string, status: string) =>
+      fetchApi<{ message: string; payout: PayoutRecord }>(`/payouts/${id}`, { method: 'PUT', body: JSON.stringify({ status }) }),
   },
 
   // Seller Profile
