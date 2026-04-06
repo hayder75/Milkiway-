@@ -7,12 +7,14 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useTheme } from "next-themes";
 import api from '@/lib/api';
 import { setStoredUser } from '@/lib/session';
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { theme } = useTheme();
   const registered = searchParams.get('registered');
   const [loading, setLoading] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
@@ -50,16 +52,18 @@ function LoginForm() {
     }, 1200);
   };
 
+  const llamaSrc = theme === 'dark' ? '/hero-llama-white.png' : '/hero-llama.png';
+
   if (isNavigating) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background gap-6">
         <div className="relative w-28 h-32 animate-bounce-slow">
           <Image
-            src="/hero-llama.png"
+            src={llamaSrc}
             alt="Loading"
             width={112}
             height={140}
-            className="object-contain object-top invert dark:invert-0"
+            className="object-contain object-top"
           />
         </div>
         
@@ -85,10 +89,10 @@ function LoginForm() {
         <div className="text-center mb-4">
           <div className="relative w-32 h-36 mx-auto">
             <Image 
-              src="/hero-llama.png" 
+              src={llamaSrc} 
               alt="Milkyway Logo" 
               fill
-              className="object-contain object-top invert dark:invert-0"
+              className="object-contain object-top"
             />
           </div>
         </div>

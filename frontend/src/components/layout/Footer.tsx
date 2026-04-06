@@ -41,7 +41,7 @@ export function Footer() {
                 className="text-lg font-semibold tracking-tight"
                 style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
               >
-                Milkyway
+                Milkyway Labs
               </span>
             </Link>
             <p
@@ -53,10 +53,10 @@ export function Footer() {
             </p>
             <div className="mt-6 space-y-1.5">
               <p className="text-sm text-muted-foreground" style={{ fontFamily: "'Inter', sans-serif" }}>
-                hello@milkyway.com
+                +251 930 304 345
               </p>
               <p className="text-sm text-muted-foreground" style={{ fontFamily: "'Inter', sans-serif" }}>
-                +1 234 567 8900
+                +251 932 123 090
               </p>
             </div>
           </div>
@@ -136,7 +136,7 @@ export function Footer() {
             className="text-xs text-muted-foreground"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
-            © 2026 Milkyway Systems. All rights reserved.
+            © 2026 Milkyway Labs. All rights reserved.
           </p>
         </div>
       </div>

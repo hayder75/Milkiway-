@@ -30,7 +30,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >

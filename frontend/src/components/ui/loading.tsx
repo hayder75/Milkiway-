@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
 interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg";
@@ -14,17 +15,18 @@ const sizes = {
 };
 
 function HorizontalLoader({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+  const { theme } = useTheme();
   const s = sizes[size];
+  const llamaSrc = theme === 'dark' ? '/hero-llama-white.png' : '/hero-llama.png';
   return (
     <div className="flex flex-col items-center gap-4">
-      {/* Llama image bouncing */}
       <div className="animate-bounce-slow">
         <Image
-          src="/hero-llama.png"
+          src={llamaSrc}
           alt="Loading"
           width={s.image}
           height={s.image * 1.25}
-          className="object-contain object-top invert dark:invert-0"
+          className="object-contain object-top"
         />
       </div>
       

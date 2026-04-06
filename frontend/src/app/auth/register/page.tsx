@@ -8,10 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useTheme } from "next-themes";
 import api from '@/lib/api';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { theme } = useTheme();
+  const llamaSrc = theme === 'dark' ? '/hero-llama-white.png' : '/hero-llama.png';
   const [loading, setLoading] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const [error, setError] = useState('');
@@ -39,11 +42,11 @@ export default function RegisterPage() {
         {/* Llama image bouncing */}
         <div className="relative w-28 h-32 animate-bounce-slow">
           <Image
-            src="/hero-llama.png"
+            src={llamaSrc}
             alt="Loading"
             width={112}
             height={140}
-            className="object-contain object-top invert dark:invert-0"
+            className="object-contain object-top"
           />
         </div>
         
@@ -106,10 +109,10 @@ export default function RegisterPage() {
         <div className="text-center mb-2">
           <div className="relative w-32 h-36 mx-auto">
             <Image 
-              src="/hero-llama.png" 
+              src={llamaSrc} 
               alt="Milkyway Logo" 
               fill
-              className="object-contain object-top invert dark:invert-0"
+              className="object-contain object-top"
             />
           </div>
         </div>

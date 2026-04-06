@@ -9,19 +9,36 @@ export default function HomePage() {
       <section className="relative overflow-hidden bg-[#FFCC00] dark:bg-[#E5B800] min-h-[85vh] px-4 md:px-8 flex items-center transition-colors py-20">
         <div className="max-w-[1400px] mx-auto w-full grid md:grid-cols-12 items-center gap-8 md:gap-12 relative z-10">
           
-          {/* Left Column - Large Text */}
-          <div className="md:col-span-4 lg:col-span-3 text-left">
+          {/* Left Column - Text & CTA */}
+          <div className="md:col-span-5 lg:col-span-4 text-left">
             <span className="block text-[#132A4B]/60 uppercase tracking-[0.2em] text-[11px] font-black mb-4">Milkyway Edition</span>
             <h1 className="text-5xl md:text-7xl font-black leading-[0.9] tracking-tighter text-[#132A4B] mb-2 uppercase">
               Milkyway <br/>
               <span className="text-[#132A4B]/40 italic">Systems</span>
             </h1>
-            <p className="text-[#132A4B]/60 text-xs uppercase tracking-[0.2em] font-bold mt-6">Secure Revenue Channels</p>
+            <p className="text-[#132A4B]/70 text-sm font-medium mt-4 mb-6 max-w-[280px]">
+              Premium software solutions for businesses. Earn commissions for every client you bring.
+            </p>
+            <p className="text-[#132A4B]/60 text-xs uppercase tracking-[0.2em] font-bold mb-8">Secure Revenue Channels</p>
+            <div className="flex flex-col gap-4">
+              <Link href="/become-seller">
+                <button className="bg-[#132A4B] text-white hover:bg-black transition-all px-8 py-3.5 rounded-xl font-black text-sm flex items-center gap-3 shadow-[4px_4px_0px_rgba(0,0,0,0.2)] active:translate-y-0.5 active:shadow-none uppercase tracking-[0.15em] w-fit">
+                  Partner Now
+                </button>
+              </Link>
+              <div className="flex items-center gap-2 text-[#132A4B]/40 font-black cursor-pointer hover:text-[#132A4B] transition-colors uppercase text-[10px] tracking-[0.1em]">
+                <span className="text-lg">↓</span>
+                <span>Scroll to explore</span>
+              </div>
+            </div>
           </div>
 
-          {/* Center Column - Static Llama Artwork (Smaller Size) */}
-          <div className="md:col-span-4 lg:col-span-6 flex justify-center items-center">
-            <div className="relative w-full max-w-[380px] md:max-w-[420px] lg:max-w-[480px]">
+          {/* Middle Space */}
+          <div className="hidden md:block md:col-span-1"></div>
+
+          {/* Right Column - Llama Artwork */}
+          <div className="md:col-span-6 lg:col-span-7 flex justify-center items-center">
+            <div className="relative w-full max-w-[280px] md:max-w-[320px] lg:max-w-[380px]">
               <Image
                 src="/hero-llama.png"
                 alt="Llama Artwork"
@@ -30,29 +47,6 @@ export default function HomePage() {
                 priority
                 className="w-full h-auto object-contain mix-blend-multiply opacity-90 transition-transform duration-700 hover:scale-[1.02]"
               />
-            </div>
-          </div>
-
-          {/* Right Column - Details/CTA */}
-          <div className="md:col-span-4 lg:col-span-3 text-left md:text-right space-y-8">
-            <div className="space-y-4">
-              <h3 className="text-2xl font-black text-[#132A4B] tracking-tight uppercase">Llama Series. 01</h3>
-              <p className="text-[#132A4B]/70 text-sm leading-relaxed max-w-[280px] md:ml-auto font-bold italic">
-                Our Llama framework supports a robust multi-dimensional network of global sales professionals and enterprise software.
-              </p>
-            </div>
-            
-            <div className="flex flex-col gap-4 items-start md:items-end">
-              <Link href="/become-seller">
-                <button className="bg-[#132A4B] text-white hover:bg-black transition-all px-8 py-3.5 rounded-xl font-black text-sm flex items-center gap-3 shadow-[4px_4px_0px_rgba(0,0,0,0.2)] active:translate-y-0.5 active:shadow-none uppercase tracking-[0.15em]">
-                  Partner Now
-                </button>
-              </Link>
-              
-              <div className="flex items-center gap-2 text-[#132A4B]/40 font-black cursor-pointer hover:text-[#132A4B] transition-colors uppercase text-[10px] tracking-[0.1em]">
-                <span className="text-lg">↓</span>
-                <span>Scroll to explore</span>
-              </div>
             </div>
           </div>
         </div>
@@ -68,9 +62,9 @@ export default function HomePage() {
             MILKYWAY is not your typical<br/>software sales system
           </h2>
           <p className="text-foreground/80 text-lg md:text-xl font-normal mb-12 max-w-[800px] mx-auto leading-relaxed">
-            We&apos;re bringing the traditional business scalability experience to your smartphone. The platform is created for those who yearn for meaningful revenue generation in the era of instant messaging. We hope to connect people around the world at a better pace - one module at a time.
+            We&apos;re bringing traditional software sales to your phone. Sell our systems to businesses and earn continuing commissions as long as they keep using our software. Every client you bring means recurring income for you - the longer they stay, the more you earn.
             <br/><br/>
-            Meet a new client, seal your deal &amp; collect a commission - start connecting with the world on MILKYWAY!
+            Meet a new client, seal your deal &amp; collect a commission - start building your revenue stream on MILKYWAY!
           </p>
 
           <div className="flex flex-col xl:flex-row justify-center items-center gap-20 xl:gap-24 mt-16 max-w-[1200px] mx-auto">
@@ -129,11 +123,11 @@ export default function HomePage() {
               </div>
               
               <div className="flex-1 bg-background border-2 border-foreground rounded-3xl p-4 relative border-dashed overflow-hidden flex flex-col pt-8 text-left">
-                <div className="font-black text-foreground text-xl mb-6 text-center leading-tight">Sync<br/>Anywhere</div>
+                <div className="font-black text-foreground text-xl mb-6 text-center leading-tight">Request<br/>payout</div>
                 
                 <div className="space-y-4 flex-1">
                   <div className="bg-[#FFCC00] border-2 border-foreground rounded-xl p-3 shadow-[2px_2px_0px_var(--color-foreground)] transform -rotate-2">
-                     <span className="font-black text-[#132A4B] text-sm">Sale closed! </span>
+                     <span className="font-black text-[#132A4B] text-sm">Sale closed!</span>
                   </div>
                   <div className="bg-muted border-2 border-foreground rounded-xl p-3 shadow-[2px_2px_0px_var(--color-foreground)] transform rotate-1">
                      <div className="h-2 bg-foreground/40 w-full mb-2"></div>
@@ -256,13 +250,6 @@ export default function HomePage() {
                     <li>• Revenue tracking dashboard</li>
                   </ul>
                 </div>
-              </div>
-              
-              {/* Arrow 3 - back to start (cycle) */}
-              <div className="flex-shrink-0 -mt-16 flex items-center">
-                <svg className="w-10 h-10 text-[#FFCC00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                  <path d="M21 12a9 9 0 11-6.219-8.56M21 3v6h-6" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
               </div>
             </div>
             
