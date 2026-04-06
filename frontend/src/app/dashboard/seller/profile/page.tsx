@@ -6,7 +6,7 @@ import Image from "next/image";
 import { getStoredSeller, type SessionSeller } from "@/lib/session";
 import api from "@/lib/api";
 import { LoadingSpinner } from "@/components/ui/loading";
-import { Camera, Upload } from "lucide-react";
+import { Camera } from "lucide-react";
 
 interface PaymentMethods {
   bank?: { enabled: boolean; bankName?: string; accountName?: string; accountNumber?: string };
@@ -102,7 +102,7 @@ export default function SellerProfilePage() {
     setMessage(null);
     
     try {
-      const result = await api.sellerProfile.update(user.sellerId, {
+      await api.sellerProfile.update(user.sellerId, {
         name,
         email,
         phone,
@@ -135,9 +135,9 @@ export default function SellerProfilePage() {
         paymentMethods: paymentMethods as any,
       } as any);
       
-      setMessage({ type: 'success', text: 'Payment methods saved successfully!' });
+      setMessage({ type: 'success', text: 'Payment methods saved!' });
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Failed to save payment methods' });
+      setMessage({ type: 'error', text: error.message || 'Failed to save' });
     } finally {
       setSaving(false);
     }
@@ -152,7 +152,7 @@ export default function SellerProfilePage() {
   }
 
   return (
-    <div>
+    <div className="max-w-4xl mx-auto space-y-8">
       <div className="dashboard-page-header">
         <div>
           <h1 className="dashboard-page-title">Profile</h1>
@@ -161,334 +161,188 @@ export default function SellerProfilePage() {
       </div>
 
       {message && (
-        <div className={`p-4 rounded-lg mb-4 ${message.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+        <div className={`p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
           {message.text}
         </div>
       )}
 
-      {/* Profile Header with Image */}
-      <div className="dashboard-card mb-6">
-        <div className="dashboard-card-body-padded">
-          <div className="flex flex-col items-center text-center">
-            <div className="relative mb-4">
-              <div className="w-28 h-28 rounded-full bg-[#FFCC00] flex items-center justify-center overflow-hidden border-4 border-white shadow-lg">
-                {profileImage ? (
-                  <Image 
-                    src={profileImage.startsWith('http') ? profileImage : `${backendUrl}${profileImage}`}
-                    alt="Profile" 
-                    width={112} 
-                    height={112} 
-                    className="object-cover"
-                  />
-                ) : (
-                  <span className="text-4xl font-bold text-[#132A4B]">{user?.name?.charAt(0) || 'S'}</span>
-                )}
-              </div>
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploadingImage}
-                className="absolute bottom-0 right-0 w-8 h-8 bg-[#132A4B] rounded-full flex items-center justify-center text-white shadow-lg hover:bg-[#1a3a5c] transition-colors"
-              >
-                {uploadingImage ? (
-                  <LoadingSpinner size="sm" />
-                ) : (
-                  <Camera className="w-4 h-4" />
-                )}
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageUpload}
-              />
+      {/* Profile Header Card */}
+      <div className="bg-white rounded-xl shadow-sm border p-8">
+        <div className="flex flex-col md:flex-row items-center gap-8">
+          <div className="relative">
+            <div className="w-32 h-32 rounded-full bg-[#FFCC00] flex items-center justify-center overflow-hidden border-4 border-white shadow-lg">
+              {profileImage ? (
+                <Image 
+                  src={profileImage.startsWith('http') ? profileImage : `${backendUrl}${profileImage}`}
+                  alt="Profile" 
+                  width={128} 
+                  height={128} 
+                  className="object-cover"
+                />
+              ) : (
+                <span className="text-5xl font-bold text-[#132A4B]">{user?.name?.charAt(0) || 'S'}</span>
+              )}
             </div>
-            <div>
-              <h2 className="text-xl font-semibold">{user?.name}</h2>
-              <p className="text-muted-foreground">{user?.email}</p>
-              <span className="d-badge d-badge-success mt-2">{user?.status}</span>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadingImage}
+              className="absolute bottom-0 right-0 w-10 h-10 bg-[#132A4B] rounded-full flex items-center justify-center text-white shadow-lg hover:bg-[#1a3a5c] transition-colors"
+            >
+              {uploadingImage ? <LoadingSpinner size="sm" /> : <Camera className="w-5 h-5" />}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageUpload}
+            />
+          </div>
+          <div className="flex-1 text-center md:text-left">
+            <h2 className="text-2xl font-bold" style={{ color: '#132A4B' }}>{user?.name}</h2>
+            <p className="text-muted-foreground mt-1">{user?.email}</p>
+            <div className="flex items-center justify-center md:justify-start gap-3 mt-3">
+              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">Active</span>
+              <span className="text-sm text-muted-foreground">Seller ID: {user?.sellerId}</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Profile Info */}
-      <div className="dashboard-card mb-6">
-        <div className="dashboard-card-header">
-          <div className="dashboard-card-title">Account Information</div>
+      {/* Account Settings */}
+      <div className="bg-white rounded-xl shadow-sm border">
+        <div className="px-6 py-4 border-b">
+          <h3 className="text-lg font-semibold" style={{ color: '#132A4B' }}>Account Settings</h3>
         </div>
-        <div className="dashboard-card-body-padded">
-          <form onSubmit={handleProfileUpdate}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+        <div className="p-6">
+          <form onSubmit={handleProfileUpdate} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium mb-1">Full Name</label>
+                <label className="block text-sm font-medium mb-2">Full Name</label>
                 <input
                   type="text"
-                  className="dashboard-search-input w-full"
+                  className="w-full h-11 px-4 rounded-lg border border-gray-200 focus:border-[#132A4B] focus:ring-1 focus:ring-[#132A4B] outline-none transition-colors"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Email</label>
+                <label className="block text-sm font-medium mb-2">Email</label>
                 <input
                   type="email"
-                  className="dashboard-search-input w-full"
+                  className="w-full h-11 px-4 rounded-lg border border-gray-200 focus:border-[#132A4B] focus:ring-1 focus:ring-[#132A4B] outline-none transition-colors"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Phone</label>
+                <label className="block text-sm font-medium mb-2">Phone</label>
                 <input
                   type="tel"
-                  className="dashboard-search-input w-full"
+                  className="w-full h-11 px-4 rounded-lg border border-gray-200 focus:border-[#132A4B] focus:ring-1 focus:ring-[#132A4B] outline-none transition-colors"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+251..."
                 />
               </div>
-              <div></div>
-              
-              <div className="md:col-span-2 pt-4 border-t">
-                <h4 className="font-medium mb-3">Change Password</h4>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Current Password</label>
-                <input
-                  type="password"
-                  className="dashboard-search-input w-full"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  placeholder="Enter current password"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">New Password</label>
-                <input
-                  type="password"
-                  className="dashboard-search-input w-full"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Enter new password"
-                />
-              </div>
+            </div>
 
-              <div className="md:col-span-2">
-                <button type="submit" className="d-btn d-btn-primary" disabled={saving}>
-                  {saving ? "Saving..." : "Save Changes"}
-                </button>
+            <div className="pt-4 border-t">
+              <h4 className="font-medium mb-4" style={{ color: '#132A4B' }}>Change Password</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Current Password</label>
+                  <input
+                    type="password"
+                    className="w-full h-11 px-4 rounded-lg border border-gray-200 focus:border-[#132A4B] focus:ring-1 focus:ring-[#132A4B] outline-none transition-colors"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="••••••••"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">New Password</label>
+                  <input
+                    type="password"
+                    className="w-full h-11 px-4 rounded-lg border border-gray-200 focus:border-[#132A4B] focus:ring-1 focus:ring-[#132A4B] outline-none transition-colors"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="••••••••"
+                  />
+                </div>
               </div>
+            </div>
+
+            <div className="flex justify-end">
+              <button type="submit" className="px-6 py-2.5 bg-[#132A4B] text-white rounded-lg font-medium hover:bg-[#1a3a5c] transition-colors disabled:opacity-50" disabled={saving}>
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
             </div>
           </form>
         </div>
       </div>
 
       {/* Payment Methods */}
-      <div className="dashboard-card">
-        <div className="dashboard-card-header">
-          <div className="dashboard-card-title">Payment Methods</div>
-          <div className="dashboard-card-subtitle">Add your bank or wallet details for payouts</div>
+      <div className="bg-white rounded-xl shadow-sm border">
+        <div className="px-6 py-4 border-b">
+          <h3 className="text-lg font-semibold" style={{ color: '#132A4B' }}>Payment Methods</h3>
+          <p className="text-sm text-muted-foreground mt-1">Add your bank or wallet details for payouts</p>
         </div>
-        <div className="dashboard-card-body-padded">
-          <div className="grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
-            {/* Telebirr */}
-            <div className="p-4 border rounded-lg">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded bg-purple-100 flex items-center justify-center">
-                    <span className="text-xs font-bold text-purple-600">TB</span>
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { key: 'telebirr', label: 'Telebirr', color: 'purple', initials: 'TB', field: 'phoneNumber', placeholder: 'Phone number' },
+              { key: 'cbe', label: 'CBE', color: 'blue', initials: 'CBE', fields: ['accountName', 'accountNumber'] },
+              { key: 'awash', label: 'Awash Bank', color: 'orange', initials: 'AW', fields: ['accountName', 'accountNumber'] },
+              { key: 'bank', label: 'Other Bank', color: 'gray', initials: 'BK', fields: ['bankName', 'accountName', 'accountNumber'] },
+            ].map((method) => (
+              <div key={method.key} className="p-4 rounded-lg border border-gray-200 hover:border-[#FFCC00] transition-colors">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-lg bg-${method.color}-100 flex items-center justify-center`}>
+                      <span className={`text-xs font-bold text-${method.color}-600`}>{method.initials}</span>
+                    </div>
+                    <span className="font-medium">{method.label}</span>
                   </div>
-                  <span className="font-medium">Telebirr</span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      className="sr-only peer"
+                      checked={paymentMethods[method.key as keyof PaymentMethods]?.enabled || false}
+                      onChange={(e) => setPaymentMethods(prev => ({
+                        ...prev,
+                        [method.key]: { ...(prev[method.key as keyof PaymentMethods] || { enabled: false }), enabled: e.target.checked }
+                      }))}
+                    />
+                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-green-500"></div>
+                  </label>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="sr-only peer"
-                    checked={paymentMethods.telebirr?.enabled || false}
-                    onChange={(e) => setPaymentMethods(prev => ({
-                      ...prev,
-                      telebirr: { ...(prev.telebirr || { enabled: false }), enabled: e.target.checked }
-                    }))}
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                </label>
-              </div>
-              {paymentMethods.telebirr?.enabled && (
-                <input
-                  type="tel"
-                  className="dashboard-search-input w-full"
-                  placeholder="+2519..."
-                  value={paymentMethods.telebirr?.phoneNumber || ""}
-                  onChange={(e) => setPaymentMethods(prev => ({
-                    ...prev,
-                    telebirr: { ...(prev.telebirr || { enabled: true }), phoneNumber: e.target.value }
-                  }))}
-                />
-              )}
-            </div>
-
-            {/* CBE */}
-            <div className="p-4 border rounded-lg">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded bg-blue-100 flex items-center justify-center">
-                    <span className="text-xs font-bold text-blue-600">CBE</span>
+                {paymentMethods[method.key as keyof PaymentMethods]?.enabled && (
+                  <div className="space-y-3">
+                    {method.fields || [method.field]?.map((field) => (
+                      <input
+                        key={field}
+                        type="text"
+                        className="w-full h-10 px-3 rounded-lg border border-gray-200 text-sm focus:border-[#132A4B] focus:ring-1 focus:ring-[#132A4B] outline-none"
+                        placeholder={field === 'phoneNumber' ? 'Phone number' : field === 'bankName' ? 'Bank name' : field === 'accountName' ? 'Account name' : 'Account number'}
+                        value={paymentMethods[method.key as keyof PaymentMethods]?.[field as keyof typeof paymentMethods[typeof method.key]] || ""}
+                        onChange={(e) => setPaymentMethods(prev => ({
+                          ...prev,
+                          [method.key]: { ...(prev[method.key as keyof PaymentMethods] || { enabled: true }), [field]: e.target.value }
+                        }))}
+                      />
+                    ))}
                   </div>
-                  <span className="font-medium">CBE</span>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="sr-only peer"
-                    checked={paymentMethods.cbe?.enabled || false}
-                    onChange={(e) => setPaymentMethods(prev => ({
-                      ...prev,
-                      cbe: { ...(prev.cbe || { enabled: false }), enabled: e.target.checked }
-                    }))}
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                </label>
+                )}
               </div>
-              {paymentMethods.cbe?.enabled && (
-                <div className="space-y-2">
-                  <input
-                    type="text"
-                    className="dashboard-search-input w-full"
-                    placeholder="Account Name"
-                    value={paymentMethods.cbe?.accountName || ""}
-                    onChange={(e) => setPaymentMethods(prev => ({
-                      ...prev,
-                      cbe: { ...(prev.cbe || { enabled: false }), accountName: e.target.value }
-                    }))}
-                  />
-                  <input
-                    type="text"
-                    className="dashboard-search-input w-full"
-                    placeholder="Account Number"
-                    value={paymentMethods.cbe?.accountNumber || ""}
-                    onChange={(e) => setPaymentMethods(prev => ({
-                      ...prev,
-                      cbe: { ...(prev.cbe || { enabled: false }), accountNumber: e.target.value }
-                    }))}
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Awash Bank */}
-            <div className="p-4 border rounded-lg">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded bg-orange-100 flex items-center justify-center">
-                    <span className="text-xs font-bold text-orange-600">AW</span>
-                  </div>
-                  <span className="font-medium">Awash Bank</span>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="sr-only peer"
-                    checked={paymentMethods.awash?.enabled || false}
-                    onChange={(e) => setPaymentMethods(prev => ({
-                      ...prev,
-                      awash: { ...(prev.awash || { enabled: false }), enabled: e.target.checked }
-                    }))}
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                </label>
-              </div>
-              {paymentMethods.awash?.enabled && (
-                <div className="space-y-2">
-                  <input
-                    type="text"
-                    className="dashboard-search-input w-full"
-                    placeholder="Account Name"
-                    value={paymentMethods.awash?.accountName || ""}
-                    onChange={(e) => setPaymentMethods(prev => ({
-                      ...prev,
-                      awash: { ...(prev.awash || { enabled: false }), accountName: e.target.value }
-                    }))}
-                  />
-                  <input
-                    type="text"
-                    className="dashboard-search-input w-full"
-                    placeholder="Account Number"
-                    value={paymentMethods.awash?.accountNumber || ""}
-                    onChange={(e) => setPaymentMethods(prev => ({
-                      ...prev,
-                      awash: { ...(prev.awash || { enabled: false }), accountNumber: e.target.value }
-                    }))}
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Other Bank */}
-            <div className="p-4 border rounded-lg">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded bg-gray-100 flex items-center justify-center">
-                    <span className="text-xs font-bold text-gray-600">BK</span>
-                  </div>
-                  <span className="font-medium">Other Bank</span>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="sr-only peer"
-                    checked={paymentMethods.bank?.enabled || false}
-                    onChange={(e) => setPaymentMethods(prev => ({
-                      ...prev,
-                      bank: { ...(prev.bank || { enabled: false }), enabled: e.target.checked }
-                    }))}
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                </label>
-              </div>
-              {paymentMethods.bank?.enabled && (
-                <div className="space-y-2">
-                  <input
-                    type="text"
-                    className="dashboard-search-input w-full"
-                    placeholder="Bank Name"
-                    value={paymentMethods.bank?.bankName || ""}
-                    onChange={(e) => setPaymentMethods(prev => ({
-                      ...prev,
-                      bank: { ...(prev.bank || { enabled: false }), bankName: e.target.value }
-                    }))}
-                  />
-                  <input
-                    type="text"
-                    className="dashboard-search-input w-full"
-                    placeholder="Account Name"
-                    value={paymentMethods.bank?.accountName || ""}
-                    onChange={(e) => setPaymentMethods(prev => ({
-                      ...prev,
-                      bank: { ...(prev.bank || { enabled: false }), accountName: e.target.value }
-                    }))}
-                  />
-                  <input
-                    type="text"
-                    className="dashboard-search-input w-full"
-                    placeholder="Account Number"
-                    value={paymentMethods.bank?.accountNumber || ""}
-                    onChange={(e) => setPaymentMethods(prev => ({
-                      ...prev,
-                      bank: { ...(prev.bank || { enabled: false }), accountNumber: e.target.value }
-                    }))}
-                  />
-                </div>
-              )}
-            </div>
+            ))}
           </div>
 
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-end mt-6">
             <button 
-              type="button" 
-              className="d-btn d-btn-primary"
               onClick={handlePaymentMethodUpdate}
               disabled={saving}
+              className="px-6 py-2.5 bg-[#FFCC00] text-[#132A4B] rounded-lg font-medium hover:bg-[#e6b800] transition-colors disabled:opacity-50"
             >
               {saving ? "Saving..." : "Save Payment Methods"}
             </button>
