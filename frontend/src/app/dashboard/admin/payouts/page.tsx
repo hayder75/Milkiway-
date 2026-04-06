@@ -2,29 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import api from "@/lib/api";
+import api, { type PayoutRecord } from "@/lib/api";
 import { getStoredSeller } from "@/lib/session";
 import { LoadingSpinner } from "@/components/ui/loading";
 
-interface PayoutRequest {
-  _id: string;
-  sellerId: string;
-  amount: number;
-  paymentMethod: string;
-  note?: string;
-  status: 'pending' | 'completed' | 'rejected';
-  createdAt: string;
-  processedAt?: string;
-  seller: {
-    _id: string;
-    name: string;
-    email: string;
-    sellerId: string;
-  };
-}
-
 export default function AdminPayoutsPage() {
-  const [payouts, setPayouts] = useState<PayoutRequest[]>([]);
+  const [payouts, setPayouts] = useState<PayoutRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
   const router = useRouter();
